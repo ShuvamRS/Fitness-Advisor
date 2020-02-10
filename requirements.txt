@@ -1,0 +1,7 @@
+requests==2.21.0
+google_auth_oauthlib==0.4.1
+pyowm==2.10.0
+geocoder==1.38.1
+beautifulsoup4==4.8.2
+google_api_python_client==1.7.11
+protobuf==3.11.3
