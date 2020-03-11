@@ -8,6 +8,9 @@ import time
 from datetime import datetime, timedelta
 from collections import defaultdict
 from database import Database
+from flask import Flask, render_template, url_for, request, redirect
+import sqlite3
+from datetime import datetime
 
 SCOPES = (
     'https://www.googleapis.com/auth/fitness.activity.read',
@@ -79,7 +82,6 @@ def generate_datasetId(last_access):
     
     return f"{start}-{end}"
 
-
 def nanoseconds(nanotime):
     # Converts namoseconds to date-time string
     dt = datetime.fromtimestamp(nanotime // 1000000000)
@@ -126,7 +128,6 @@ def update_db(db, credentials, datasetId):
 
 def main():
     credentials = authorization()
-
     with Database("records.db") as db:
         try:
             db.createTables()
@@ -139,6 +140,32 @@ def main():
         datasetId = generate_datasetId(last_access)
         update_db(db, credentials, datasetId)
 
+app = Flask(__name__)
+        
+@app.route('/', methods=['POST', 'GET'])
+def index():
+    if (request.method == 'POST'):
+        task_calories = request.form['calories']
+        task_weight = request.form['weight']
+        Date = '2020-03-09'
+        
+        try:
+            
+            db = sqlite3.connect('records.db')
+            cursor = db.cursor()
+            #cursor.execute("INSERT INTO IDF (Token, IDF) VALUES (?, ?)", (task_calories, task_weight))
+            query = """UPDATE Fitness SET Calories_Consumed = ?, Weight_Kg = ? WHERE Date = ?"""
+            cursor.execute(query, (task_calories, task_weight, Date))
+            db.commit()
+            
+            
+            return redirect('/')
+        except:
+            return 'There was an issue'
+            
+    else:
+        return render_template('index.html')
 
-if __name__ == "__main__":
+if (__name__ == "__main__"):
     main()
+    app.run(debug = True)

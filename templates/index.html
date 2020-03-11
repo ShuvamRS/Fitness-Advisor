@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block head %}
+
+{% endblock %}
+
+{% block body %}
+<div class = "content">
+    <h1>Welcome to Fitness Advisor!</h1>
+
+    <table>
+        <tr>
+            <th>Enter calories (cal) consumed and your weight (lbs) for today:</th>
+        </tr>
+        <tr>
+            <td></td>
+            <td></td>
+        </tr>
+    </table>
+
+    <form action = "/" method = "POST">
+        <input type = "text" name = "calories" id = "calories">
+        <input type = "text" name = "weight" id = "weight">
+        <input type = "submit" value = "Submit">
+    </form>
+</div>
+{% endblock %}
