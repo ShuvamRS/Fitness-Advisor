@@ -15,11 +15,12 @@ SQL_COMMANDS = {
             WHERE {timeFilter} = "{time}"
             ''',
 
-"access":   '''
+"access_date":
+            '''
             SELECT MAX(Date)
             FROM Fitness
             ''',
-
+            
 "create":[  '''
             CREATE TABLE ActivityReference
             (
@@ -63,12 +64,12 @@ SQL_COMMANDS = {
                     First_Name TEXT,
                     Last_Name TEXT,
                     DOB TEXT,
-                    Gender CHARACTER(1),
-                    Height_Meters REAL
-                    CHECK (
-                            NOT (First_Name IS NULL AND Last_Name IS NULL AND DOB IS NULL AND
-                            Gender IS NULL AND Height_Meters IS NULL)
-                        )
+                    Gender TEXT,
+                    Height_Meters REAL,
+                    Target_Weight_Kg INT,
+                    Target_Period TEXT,
+                    Calories_Intake_Goal INT,
+                    Calories_Burn_Goal INT
                 );
             '''
         ]
@@ -115,7 +116,7 @@ class Database:
             self.insert(tableName="ActivityReference", AID=int(container[i].text), Activity_Type=container[i-1].text)
 
     def getPrevAccessDate(self):
-        self.cur.execute(SQL_COMMANDS["access"])
+        self.cur.execute(SQL_COMMANDS["access_date"])
         return self.cur.fetchone()[0]
 
     def createTables(self):
