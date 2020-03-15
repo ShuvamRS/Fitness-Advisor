@@ -8,9 +8,10 @@ import time
 from datetime import datetime, timedelta
 from collections import defaultdict
 from database import Database
-from flask import Flask, render_template, url_for, request, redirect
+from flask import Flask, render_template, request, redirect
 import sqlite3
-from datetime import datetime
+import redis
+from rq import Queue
 
 SCOPES = (
     'https://www.googleapis.com/auth/fitness.activity.read',
@@ -141,30 +142,47 @@ def main():
         update_db(db, credentials, datasetId)
 
 app = Flask(__name__)
+r = redis.Redis()
+q = Queue(connection=r)
         
 @app.route('/', methods=['POST', 'GET'])
-def index():
+def profile():
     if (request.method == 'POST'):
-        task_calories = request.form['calories']
-        task_weight = request.form['weight']
-        Date = '2020-03-09'
+        firstname = request.form['firstname']
+        lastname = request.form['lastname']
+        dob = request.form['dob']
+        gender = request.form['gender']
+        height = request.form['height']
+        tarweight = request.form['tarweight']
+        
+        curWeight = request.form['curWeight']
+        calories = request.form['calories']
+        targetPeriod = request.form['targetPeriod']
+        
+        
+        #Date = '2020-03-09'
+        Date = str(datetime.today().date())
+        # targetPeriod = '5 Months'
+        # cal_in = '600'
+        # cal_burn = '500'
         
         try:
-            
             db = sqlite3.connect('records.db')
             cursor = db.cursor()
-            #cursor.execute("INSERT INTO IDF (Token, IDF) VALUES (?, ?)", (task_calories, task_weight))
+            
+            
+            cursor.execute("INSERT INTO User (Date, First_Name, Last_Name, DOB, Gender, Height_Meters, Target_Weight_Kg, Target_Period) VALUES (?, ?, ?, ?, ?, ?, ?, ?)", (Date, firstname, lastname, dob, gender, height, tarweight, targetPeriod))
+            
             query = """UPDATE Fitness SET Calories_Consumed = ?, Weight_Kg = ? WHERE Date = ?"""
-            cursor.execute(query, (task_calories, task_weight, Date))
+            cursor.execute(query, (calories, curWeight, Date))
+            
             db.commit()
-            
-            
             return redirect('/')
         except:
             return 'There was an issue'
             
     else:
-        return render_template('index.html')
+        return render_template('profile.html')
 
 if (__name__ == "__main__"):
     main()
