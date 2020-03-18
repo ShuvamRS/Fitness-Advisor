@@ -205,8 +205,6 @@ def get_personalized_recommendation(cur, avg_time_dict, avg_cal_exp_dict, cal_ex
     avg_cal_exp_list = sorted(avg_cal_exp_dict.items(), key=lambda x:x[1])
     recomended_activities = defaultdict(lambda: defaultdict(int))
 
-    recommended_cal_exp = 5000
-
     while recommended_cal_exp > 0:
         for activity in avg_cal_exp_list:
             if (recommended_cal_exp - activity[1]) < 0:
