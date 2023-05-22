@@ -1,4 +1,4 @@
-requests==2.21.0
+requests==2.31.0
 google_auth_oauthlib==0.4.1
 pyowm==2.10.0
 geocoder==1.38.1
